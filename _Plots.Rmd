@@ -1,0 +1,32 @@
+---
+title: "Data Download"
+date: 
+output: pdf_document
+urlcolor: blue
+geometry: margin=0.75in
+---
+ 
+Install and load required packages
+```{r}
+if (!require("quantmod")) install.packages("quantmod")
+if (!require("ggplot2")) install.packages("ggplot2") 
+library(quantmod); library(ggplot2)  
+```
+
+Load output
+```{r}
+data <- read.table("BMA_weights_a.out", header = FALSE)
+colnames(data) <- c("prior_a", "BMA_weight")
+```
+
+Plot BMA weights
+```{r, fig.width=8, fig.height=4}
+bw <- ggplot(data, aes(x = prior_a, y = BMA_weight)) +
+  geom_point(size=3) + geom_line(size=0.5) +
+  labs(title = "", x = "Prior a", y = "BMA Weight") +
+  scale_x_continuous(breaks = seq(1, 10, 1)) + 
+  scale_y_continuous(limits = c(0.025, 0.15)) + theme_minimal()
+
+ggsave("C:/Data/copula_LNCS/graphs/BMA_weights.eps", plot=bw, device="eps", width=7, height=4)
+bw
+```

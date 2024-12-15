@@ -1,0 +1,73 @@
+---
+title: "Data Download"
+date: 
+output: pdf_document
+urlcolor: blue
+geometry: margin=0.75in
+---
+ 
+Install and load required packages
+```{r}
+if (!require("quantmod")) install.packages("quantmod")
+if (!require("ggplot2")) install.packages("ggplot2") 
+library(quantmod); library(ggplot2)  
+```
+
+Load data
+```{r, message=FALSE, warning=FALSE}
+tickers <- c("XIC.TO", "ZAG.TO")
+findat <- quantmod::getSymbols(tickers, src="yahoo", from="2020-01-01", to="2024-10-01")
+prices_lst <- lapply(tickers, function(ticker) {
+  get(ticker)[, paste0(ticker, ".Close")]
+})
+prices <- do.call(merge.xts, prices_lst)
+colnames(prices) <- c("XIC", "ZAG")
+log_returns <- na.omit(diff(log(prices)))
+```
+
+Write formatted data
+```{r, message=FALSE, warning=FALSE}
+write.table(log_returns, file="C:/Data/copula_LNCS/data/log_returns.txt", row.names=FALSE, col.names=FALSE, sep=" ")
+
+nrow(log_returns)
+```
+
+Plot XIC 
+```{r, fig.width=6, fig.height=4, message=FALSE}
+g1 <- ggplot(data=log_returns) + geom_line(aes(x=index(log_returns), y=XIC), color="black") + 
+  labs(x="", y="XIC", title="") + ylim(c(-0.05,0.05)) + theme_minimal() + theme(legend.position="none") +
+  theme(panel.grid.major = element_line(linewidth=0.1)) + theme(panel.grid.minor=element_blank()) +
+  theme(axis.text.x = element_text(size=8)) +
+  scale_x_date(date_breaks="6 months", date_labels = "%Y-%m") 
+
+ggsave("C:/Data/copula_LNCS/graphs/log_ret_XIC.eps", plot=g1, device="eps", width=7, height=5)
+#g1
+```
+
+Plot ZAG
+```{r, fig.width=6, fig.height=4, message=FALSE}
+g2 <- ggplot(data=log_returns) + geom_line(aes(x=index(log_returns), y=ZAG), color="black") + 
+  labs(x="", y="ZAG", title="") + ylim(c(-0.05,0.05)) + theme_minimal() + theme(legend.position="none") +
+  theme(panel.grid.major = element_line(linewidth=0.1)) + theme(panel.grid.minor=element_blank()) +
+  theme(axis.text.x = element_text(size=8)) +
+  scale_x_date(date_breaks="6 months", date_labels = "%Y-%m") 
+
+ggsave("C:/Data/copula_LNCS/graphs/log_ret_ZAG.eps", plot=g2, device="eps", width=7, height=5)
+#g2
+```
+
+Scatter plot
+```{r, fig.width=6, fig.height=6, warning=FALSE, message=FALSE}
+log_returns_df <- data.frame(Date=index(log_returns), XIC=log_returns$XIC, ZAG=log_returns$ZAG)
+
+sc <- ggplot(log_returns_df, aes(x=XIC, y=ZAG)) +
+  geom_point(color="black") +
+  geom_smooth(method="loess", color="red", size=1, span=0.1) +
+  labs(title="", x="XIC Log Returns", y="ZAG Log Returns") +
+  theme_minimal() + xlim(c(-0.04,0.04)) + ylim(c(-0.02,0.02)) + 
+  theme(legend.position = "none")
+
+ggsave("C:/Data/copula_LNCS/graphs/scatter.eps", plot=sc, device="eps", width=7, height=7)
+#sc
+```
+
