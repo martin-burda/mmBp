@@ -1,6 +1,6 @@
 # mmBp
 
-This repository contains the implementation code of the paper "[Multiscale Bernstein Copula with Bayesian Model Averaging](https://www.economics.utoronto.ca/mburda/papers/sparsity.pdf)" by [Martin Burda](https://www.economics.utoronto.ca/mburda/) and [Artem Prokhorov](https://sites.google.com/site/artembprokhorov) (2024).
+This repository contains the implementation code of the paper "[Multiscale Bernstein Copula with Bayesian Model Averaging](https://www.economics.utoronto.ca/mburda/papers/mmBp.pdf)" by [Martin Burda](https://www.economics.utoronto.ca/mburda/) and [Artem Prokhorov](https://sites.google.com/site/artembprokhorov) (2024).
 
 The code is written in [Modern Fortran](https://fortran-lang.org/), designed for scalable native [parallelization](https://wvuhpc.github.io/Modern-Fortran/20-Parallel-Programming/index.html) for distributed nodes of Unix High Performance Computing ([HPC](https://scinethpc.ca/)) systems with across-node communication via Message Passing Interface ([MPI](https://github.com/open-mpi/ompi)) and within-node acceleration on Graphical Processing Units ([GPU](https://www.nvidia.com/en-sg/data-center/hpc/)) with [OpenACC](https://github.com/OpenACC) offload directives.
 
